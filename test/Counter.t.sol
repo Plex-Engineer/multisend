@@ -2,23 +2,18 @@
 pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
-import "../src/Counter.sol";
+import "../src/Multisend.sol";
 
 contract CounterTest is Test {
-    Counter public counter;
+    Multisend public multisend;
+    address payable[] addrList = [payable(address(1337)), payable(address(1338)), payable(address(1339))];
 
     function setUp() public {
-        counter = new Counter();
-        counter.setNumber(0);
+        multisend = new Multisend();
     }
 
-    function testIncrement() public {
-        counter.increment();
-        assertEq(counter.number(), 1);
-    }
-
-    function testSetNumber(uint256 x) public {
-        counter.setNumber(x);
-        assertEq(counter.number(), x);
+    function testSend() public {
+        multisend.multisend{value:9000000000000000000}(addrList, 3000000000000000000);
+        assertEq(address(1337).balance, 3000000000000000000);
     }
 }
